@@ -6,6 +6,8 @@ use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\LeadAssignedNotification;
+use App\Notifications\LeadStatusChangedNotification;
 
 class LeadController extends Controller
 {
@@ -75,6 +77,10 @@ class LeadController extends Controller
             'created_by' => Auth::id(),
         ]);
 
+        if (!empty($lead->assigned_to)) {
+                $lead->assignedUser->notify(new LeadAssignedNotification($lead));
+        }
+
         return redirect()->route('leads.index')
             ->with('success', 'Lead created successfully.');
     }
@@ -125,12 +131,24 @@ class LeadController extends Controller
             'contacted_at' => 'nullable|date'
         ]);
 
-        $lead->update($request->all());
+        $oldStatus = $lead->status;
+
+        $lead->update($request->only([
+            'first_name','last_name','email','phone','company','title',
+            'source','status','estimated_value','notes','assigned_to','contacted_at'
+        ]));
+
+        // Notify assigned user if status changed
+        if ($oldStatus !== $lead->status && $lead->assignedUser) {
+            $lead->assignedUser->notify(
+                new LeadStatusChangedNotification($lead, $oldStatus, $lead->status)
+            );
+        }
 
         return redirect()->route('leads.index')
             ->with('success', 'Lead updated successfully.');
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -154,12 +172,21 @@ class LeadController extends Controller
     {
         $this->authorizeLeadAccess($lead);
         
+        $oldStatus = $lead->status;
+
         $lead->update([
             'status' => 'contacted',
             'contacted_at' => now()
         ]);
 
+        if ($lead->assignedUser) {
+            $lead->assignedUser->notify(
+            new LeadStatusChangedNotification($lead, $oldStatus, 'contacted')
+            );
+        }
+
         return redirect()->back()->with('success', 'Lead marked as contacted.');
+
     }
 
     /**
@@ -190,4 +217,25 @@ class LeadController extends Controller
         
         abort(403, 'Unauthorized action.');
     }
+
+    public function assign(Request $request, $id)
+    {
+        $lead = Lead::findOrFail($id);
+    
+        $validated = $request->validate([
+            'assigned_to' => 'required|exists:users,id',
+        ]);
+
+        $oldAssignee = $lead->assigned_to;
+        $lead->update($validated);
+
+        // Send notification to newly assigned user
+        if ($oldAssignee !== $validated['assigned_to']) {
+            $assignee = User::find($validated['assigned_to']);
+            $assignee->notify(new LeadAssignedNotification($lead));
+        }
+
+        return response()->json($lead);
+    }
+  
 }
