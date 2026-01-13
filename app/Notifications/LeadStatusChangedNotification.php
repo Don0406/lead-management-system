@@ -37,7 +37,7 @@ class LeadStatusChangedNotification extends Notification
         return [
             'type' => 'lead_status_changed',
             'title' => 'Lead Status Updated',
-            'message' => "Status Update: Lead {$this->lead->full_name} status changed to {$this->newStatus}",
+            'message' => "Status Update: Lead {$this->lead->full_name}'s status changed to {$this->newStatus}",
             'lead_id' => $this->lead->id,
             'lead_name' => $this->lead->full_name,
             'old_status' => $this->oldStatus,
