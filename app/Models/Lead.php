@@ -61,4 +61,14 @@ class Lead extends Model
         return $query->where('assigned_to', $userId)
                     ->orWhere('created_by', $userId);
     }
+
+    /**
+    * Get user assigned to this lead
+    */
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    
 }

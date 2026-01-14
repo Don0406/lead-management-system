@@ -34,11 +34,23 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/leads/status/{status}', [LeadController::class, 'byStatus'])
         ->name('leads.byStatus');
+    
+    Route::post('/leads/{lead}/assign', [LeadController::class, 'assign'])
+        ->name('leads.assign');
 });
 
+<<<<<<< HEAD
 // Redirect /home to /dashboard
 Route::get('/home', function () {
     return redirect('/dashboard');
 })->middleware('auth')->name('home');
 
 
+=======
+
+    // Add this route to redirect /home to /dashboard
+    Route::get('/home', function () {
+        return redirect('/dashboard');
+    })->middleware('auth')->name('home');
+    
+>>>>>>> uychenny/feature/notifications

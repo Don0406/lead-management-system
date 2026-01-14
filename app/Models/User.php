@@ -63,4 +63,20 @@ class User extends Authenticatable
         
         return Lead::myLeads($this->id)->with(['assignedUser', 'creator']);
     }
+
+    /**
+     ** Get all notifications for the user
+     */
+     public function notificationSettings()
+    {
+        return $this->hasMany(NotificationSetting::class);
+    }
+
+    /**
+    * Get unread notifications count
+    */
+    public function unreadNotificationsCount(): int
+    {
+        return $this->unreadNotifications()->count();
+    }
 }
