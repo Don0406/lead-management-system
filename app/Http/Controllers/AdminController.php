@@ -9,6 +9,9 @@ class AdminController extends Controller
 {
     public function index()
     {
+        
+        \Log::info('Admin dashboard accessed by: ' . auth()->user()->name);
+        
         $stats = [
             'total' => Lead::count(),
             'new' => Lead::where('status', 'new')->count(),
