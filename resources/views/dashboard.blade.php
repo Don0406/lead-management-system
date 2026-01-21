@@ -35,7 +35,6 @@
     </div>
 
     {{-- 3. ROLE-BASED STATS GRID --}}
-    {{-- Notice: $stats is now filtered by the Controller logic we updated earlier --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         @php
             $statConfig = [
@@ -53,7 +52,7 @@
         @endforeach
     </div>
 
-    {{-- 4. TEAM GOVERNANCE (Admin: User Management | Manager: Assignment Tracking) --}}
+    {{-- 4. TEAM GOVERNANCE --}}
     @if(auth()->user()->role === 'admin')
         <div class="pt-8 border-t border-slate-100">
             <div class="flex items-center justify-between mb-8">
@@ -90,85 +89,157 @@
         </div>
     @endif
 
-   {{-- 5. RECENT LEADS TABLE (Restored Fields) --}}
-<div class="bg-white border border-slate-100 overflow-hidden">
-    <div class="p-8 border-b border-slate-50 flex justify-between items-center">
-        <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A4651]">Lead Registry Activity</h4>
-        <a href="{{ route('leads.index') }}" class="text-[9px] font-black uppercase tracking-widest text-[#AEA181] hover:text-[#5A384B]">Full Ledger →</a>
+    {{-- 5. RECENT LEADS TABLE --}}
+    <div class="bg-white border border-slate-100 overflow-hidden">
+        <div class="p-8 border-b border-slate-50 flex justify-between items-center">
+            <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A4651]">Lead Registry Activity</h4>
+            <a href="{{ route('leads.index') }}" class="text-[9px] font-black uppercase tracking-widest text-[#AEA181] hover:text-[#5A384B]">Full Ledger →</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#FDFCFB]">
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Lead Principal</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Source</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Value</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Status</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($recentLeads as $lead)
+                    <tr class="group hover:bg-[#FDFCFB]/50 transition-colors">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-8 h-8 rounded-full bg-[#5A4651] text-white flex items-center justify-center text-[10px] font-black">
+                                    {{ substr($lead->first_name, 0, 1) }}
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-[#5A4651] mb-0.5">{{ $lead->full_name }}</p>
+                                    <p class="text-[9px] text-slate-400 italic">{{ $lead->company ?? 'Independent' }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-[10px] text-slate-500 font-medium uppercase tracking-tighter">{{ $lead->source ?? 'Direct' }}</td>
+                        <td class="px-8 py-5 text-[11px] font-bold text-[#5A4651]">${{ number_format($lead->valuation ?? 0, 2) }}</td>
+                        <td class="px-8 py-5">
+                            <span class="text-[8px] font-black uppercase tracking-widest px-3 py-1 border border-[#AEA181]/20 text-[#AEA181] bg-[#AEA181]/5">
+                                {{ $lead->status }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex justify-end gap-3 items-center">
+                                @php $clientUser = \App\Models\User::where('email', $lead->email)->first(); @endphp
+                                @if($clientUser)
+                                    <a href="{{ route('terminal.index', ['client_id' => $clientUser->id]) }}" class="text-[#AEA181] hover:text-[#5A384B]"><i class="fas fa-terminal text-xs"></i></a>
+                                @endif
+                                <a href="{{ route('leads.show', $lead) }}" class="text-slate-300 hover:text-[#5A384B]"><i class="fas fa-eye text-xs"></i></a>
+                                <a href="{{ route('leads.edit', $lead) }}" class="text-slate-300 hover:text-[#AEA181]"><i class="fas fa-edit text-xs"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" class="p-8 text-center text-[10px] text-slate-300 uppercase">No lead activity recorded.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-    
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-[#FDFCFB]">
-                    <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Lead Principal</th>
-                    <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Source</th>
-                    <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Value</th>
-                    <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Status</th>
-                    <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50 text-right">Action</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-50">
-                @forelse($recentLeads as $lead)
-                <tr class="group hover:bg-[#FDFCFB]/50 transition-colors">
-                    <td class="px-8 py-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-8 h-8 rounded-full bg-[#5A4651] text-white flex items-center justify-center text-[10px] font-black">
-                                {{ substr($lead->first_name, 0, 1) }}
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-[#5A4651] mb-0.5">{{ $lead->full_name }}</p>
-                                <p class="text-[9px] text-slate-400 italic">{{ $lead->company ?? 'Independent' }}</p>
-                            </div>
-                        </div>
-                    </td>
-                    {{-- RESTORED: Source --}}
-                    <td class="px-8 py-5">
-                        <span class="text-[10px] text-slate-500 font-medium uppercase tracking-tighter">
-                            {{ $lead->source ?? 'Direct' }}
-                        </span>
-                    </td>
-                    {{-- RESTORED: Value --}}
-                    <td class="px-8 py-5">
-                        <span class="text-[11px] font-bold text-[#5A4651]">
-                            ${{ number_format($lead->value ?? 0, 2) }}
-                        </span>
-                    </td>
-                    <td class="px-8 py-5">
-                        <span class="text-[8px] font-black uppercase tracking-widest px-3 py-1 border border-[#AEA181]/20 text-[#AEA181] bg-[#AEA181]/5">
-                            {{ $lead->status }}
-                        </span>
-                    </td>
-                    <td class="px-8 py-5 text-right">
-                        <div class="flex justify-end gap-3 items-center">
-                            {{-- NEW: Terminal Message Link --}}
-                            @php
-                                // Find if this lead has a registered User account to chat with
-                                $clientUser = \App\Models\User::where('email', $lead->email)->first();
-                            @endphp
-                            
-                            @if($clientUser)
-                                <a href="{{ route('terminal.index', ['client_id' => $clientUser->id]) }}" 
-                                   class="text-[#AEA181] hover:text-[#5A384B] transition-colors" title="Open Terminal">
-                                    <i class="fas fa-terminal text-xs"></i>
-                                </a>
-                            @endif
 
-                            <a href="{{ route('leads.show', $lead) }}" class="text-slate-300 hover:text-[#5A384B] transition-colors"><i class="fas fa-eye text-xs"></i></a>
-                            <a href="{{ route('leads.edit', $lead) }}" class="text-slate-300 hover:text-[#AEA181] transition-colors"><i class="fas fa-edit text-xs"></i></a>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                {{-- Empty state remains same --}}
-                @endforelse
-            </tbody>
-        </table>
+    {{-- 6. RECENT ACQUISITIONS (Orders) --}}
+    <div class="bg-white border border-slate-100 overflow-hidden shadow-sm">
+        <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-[#FDFCFB]/30">
+            <div>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A4651]">Recent Acquisitions</h4>
+                <p class="text-[9px] text-slate-400 italic">Live transaction monitoring and order fulfillment.</p>
+            </div>
+            <a href="{{ route('orders.index') }}" class="text-[9px] font-black uppercase tracking-widest text-[#AEA181] hover:text-[#5A384B]">Full Order Ledger →</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#FDFCFB]">
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Principal</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Asset / Service</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Investment</th>
+                        <th class="px-8 py-4 text-[9px] uppercase tracking-widest text-slate-400 font-black border-b border-slate-50">Status Management</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($recentOrders as $order)
+                    <tr class="group hover:bg-[#FDFCFB]/50 transition-colors">
+                        <td class="px-8 py-5">
+                            <p class="text-xs font-bold text-[#5A4651]">{{ $order->user->name ?? 'Unknown Client' }}</p>
+                            <p class="text-[9px] text-slate-400">{{ $order->user->email ?? '' }}</p>
+                        </td>
+                        <td class="px-8 py-5">
+                            <p class="text-[10px] font-bold text-[#5A4651] uppercase tracking-tighter">{{ $order->product->name ?? 'Curated Addition' }}</p>
+                            <p class="text-[8px] text-slate-400 italic font-mono">ID: #{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</p>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span class="text-[11px] font-bold text-[#5A4651]">${{ number_format($order->total, 2) }}</span>
+                        </td>
+                        <td class="px-8 py-5">
+                            <form action="{{ route('orders.update', $order) }}" method="POST" class="inline-block">
+                                @csrf
+                                @method('PATCH')
+                                <select name="status" onchange="this.form.submit()" 
+                                    class="text-[8px] font-black uppercase tracking-[0.2em] border border-slate-100 bg-white py-1.5 px-3 focus:ring-1 focus:ring-[#AEA181] focus:border-[#AEA181] cursor-pointer outline-none rounded-none shadow-sm transition-all hover:border-[#AEA181]/50">
+                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="p-12 text-center text-[10px] uppercase tracking-[0.3em] text-slate-300 font-bold italic">No active acquisitions.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-</div>
 
-{{-- MODALS UNCHANGED FROM YOUR PREVIOUS CODE --}}
-{{-- ... Provision Modal & Edit Staff Modal ... --}}
+{{-- MODALS FOR ADMIN USE --}}
+<div id="provisionModal" class="hidden fixed inset-0 bg-[#5A4651]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full p-10 border-t-4 border-[#AEA181]">
+        <h3 class="brand-font text-3xl text-[#5A4651] mb-2 italic">Provision Account</h3>
+        <p class="text-[10px] uppercase tracking-widest text-slate-400 mb-8">Establish new internal credentials</p>
+        
+        <form action="{{ route('staff.provision') }}" method="POST" class="space-y-6">
+            @csrf
+            <div>
+                <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2">Full Name</label>
+                <input type="text" name="name" required class="w-full border-slate-200 focus:border-[#AEA181] focus:ring-0 text-sm py-3 px-4">
+            </div>
+            <div>
+                <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2">System Email</label>
+                <input type="email" name="email" required class="w-full border-slate-200 focus:border-[#AEA181] focus:ring-0 text-sm py-3 px-4">
+            </div>
+            <div>
+                <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2">Access Role</label>
+                <select name="role" class="w-full border-slate-200 focus:border-[#AEA181] focus:ring-0 text-xs py-3 px-4">
+                    <option value="sales_rep">Representative</option>
+                    <option value="sales_manager">Manager</option>
+                    <option value="admin">Administrator</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-2">Secure Key</label>
+                <input type="password" name="password" required class="w-full border-slate-200 focus:border-[#AEA181] focus:ring-0 text-sm py-3 px-4">
+            </div>
+            <div class="flex gap-4 pt-4">
+                <button type="submit" class="flex-1 bg-[#5A4651] text-white py-4 text-[10px] font-black uppercase tracking-widest hover:bg-[#33222B] transition-all">Authorize</button>
+                <button type="button" onclick="document.getElementById('provisionModal').classList.add('hidden')" class="px-8 border border-slate-200 text-slate-400 hover:bg-slate-50 transition-all">&times;</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 @endsection

@@ -31,7 +31,7 @@ class LeadController extends Controller
             'phone'    => 'nullable|string|max:20',
             'company'  => 'nullable|string|max:255',
             'interest' => 'required|string',
-            'value'    => 'nullable|numeric',
+            'valuation'    => 'nullable|numeric',
             'source'   => 'nullable|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -58,7 +58,7 @@ class LeadController extends Controller
                     'phone'      => $validated['phone'],
                     'company'    => $validated['company'],
                     'source'     => $validated['source'] ?? 'Landing Page',
-                    'value'      => $validated['value'] ?? 0,
+                    'valuation'      => $validated['valuation'] ?? 0,
                     'status'     => 'new',
                     'notes'      => "Primary Interest: " . $validated['interest'],
                     'created_by' => $user->id, 
@@ -137,7 +137,7 @@ class LeadController extends Controller
             'last_name'   => 'required|string|max:255',
             'email'       => 'required|email|unique:leads,email',
             'source'      => 'required|string',
-            'value'       => 'nullable|numeric',
+            'valuation'       => 'nullable|numeric',
             'assigned_to' => 'nullable|exists:users,id'
         ]);
 
@@ -175,7 +175,7 @@ class LeadController extends Controller
             'first_name' => 'required|string|max:255',
             'email'      => 'required|email|unique:leads,email,' . $lead->id,
             'status'     => 'required|in:new,contacted,qualified,proposal,negotiation,closed_won,closed_lost',
-            'value'      => 'nullable|numeric',
+            'valuation'      => 'nullable|numeric',
             'source'     => 'nullable|string',
         ]);
 

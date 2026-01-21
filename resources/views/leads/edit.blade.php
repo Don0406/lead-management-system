@@ -99,7 +99,8 @@
 
                 <div class="space-y-2">
                     <label class="text-[9px] font-black uppercase tracking-widest text-slate-400">Valuation ($)</label>
-                    <input type="number" step="0.01" name="value" value="{{ old('value', $lead->value) }}" 
+                    {{-- FIXED: Changed name="value" to name="valuation" and updated the value attribute --}}
+                    <input type="number" step="0.01" name="valuation" value="{{ old('valuation', $lead->valuation) }}" 
                         class="w-full bg-[#FDFCFB] border border-slate-100 p-3 text-sm font-bold text-[#AEA181] focus:border-[#AEA181] outline-none transition-all">
                 </div>
             </div>

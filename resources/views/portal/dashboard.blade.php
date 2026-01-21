@@ -9,8 +9,7 @@
             Project Overview
         </a>
         
-        {{-- Updated Link for Orders --}}
-        <a href="{{ Route::has('orders.index') ? route('orders.index') : '#' }}" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 hover:text-[#5A4651] transition-all pb-6">
+        <a href="{{ Route::has('orders.index') ? route('orders.index') : '#' }}" class="text-[10px] font-black uppercase tracking-[0.3em] {{ request()->routeIs('orders.*') ? 'text-[#5A4651] border-b-2 border-[#AEA181]' : 'text-slate-300' }} hover:text-[#5A4651] transition-all pb-6">
             My Orders
         </a>
         
@@ -24,7 +23,6 @@
             @endif
         </a>
 
-        {{-- Updated Link for Security --}}
         <a href="{{ Route::has('profile.edit') ? route('profile.edit') : '#' }}" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 hover:text-[#5A4651] transition-all pb-6">
             Security Profile
         </a>
@@ -37,6 +35,12 @@
             Welcome, {{ explode(' ', auth()->user()->name)[0] }}<span class="text-[#AEA181]">.</span>
         </h2>
     </div>
+
+    @if(session('success'))
+        <div class="bg-green-50 border border-green-100 p-4 text-[10px] font-black uppercase tracking-widest text-green-600 text-center">
+            {{ session('success') }}
+        </div>
+    @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
         
@@ -78,7 +82,7 @@
                 </div>
             </div>
 
-            {{-- Project Dossier --}}
+            {{-- Project Dossier (UPDATED TO SHOW VALUATION) --}}
             <div class="bg-white border border-slate-100 p-12 relative">
                 <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A4651] mb-10 border-b border-slate-50 pb-4">Project Dossier</h4>
                 
@@ -91,6 +95,19 @@
                         <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block mb-2">Registered Email</label>
                         <p class="text-sm italic text-[#5A4651] font-medium border-b border-slate-50 pb-2">{{ $lead->email ?? auth()->user()->email }}</p>
                     </div>
+
+                    {{-- NEW FIELD: Projected Valuation --}}
+                    <div>
+                        <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block mb-2">Projected Valuation</label>
+                        <p class="text-sm italic text-[#AEA181] font-bold border-b border-slate-50 pb-2">
+                            ${{ number_format($lead->valuation ?? 0, 2) }}
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block mb-2">Reference ID</label>
+                        <p class="text-sm italic text-[#5A4651] font-medium border-b border-slate-50 pb-2">#L-{{ str_pad($lead->id ?? 0, 5, '0', STR_PAD_LEFT) }}</p>
+                    </div>
+
                     <div class="md:col-span-2">
                         <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block mb-2">Current Requirements Brief</label>
                         <p class="text-sm italic text-[#5A4651] leading-relaxed bg-[#FDFCFB] p-6 border border-slate-50">
@@ -100,7 +117,7 @@
                 </div>
             </div>
 
-            {{-- NEW: CURATED ADDITIONS (Product Catalog) --}}
+            {{-- CURATED ADDITIONS --}}
             <div class="bg-white border border-slate-100 p-12 relative">
                 <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#5A4651] mb-10 border-b border-slate-50 pb-4">Curated Additions</h4>
                 
@@ -117,9 +134,15 @@
                         <p class="text-[10px] italic text-slate-400 leading-relaxed mb-6">
                             Complete interior architectural styling tailored to your specific project dossier.
                         </p>
-                        <button class="w-full py-3 bg-[#5A4651] text-white text-[8px] font-black uppercase tracking-[0.2em] group-hover:bg-[#AEA181] transition-all">
-                            Initialize Order
-                        </button>
+                        
+                        <form action="{{ route('orders.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="1">
+                            <input type="hidden" name="price" value="12500">
+                            <button type="submit" class="w-full py-3 bg-[#5A4651] text-white text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#AEA181] transition-all">
+                                Initialize Order
+                            </button>
+                        </form>
                     </div>
 
                     {{-- Product Item 2 --}}
@@ -134,9 +157,15 @@
                         <p class="text-[10px] italic text-slate-400 leading-relaxed mb-6">
                             Deep-dive topographical and environmental reporting for your registered site.
                         </p>
-                        <button class="w-full py-3 bg-[#5A4651] text-white text-[8px] font-black uppercase tracking-[0.2em] group-hover:bg-[#AEA181] transition-all">
-                            Initialize Order
-                        </button>
+
+                        <form action="{{ route('orders.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="2">
+                            <input type="hidden" name="price" value="4200">
+                            <button type="submit" class="w-full py-3 bg-[#5A4651] text-white text-[8px] font-black uppercase tracking-[0.2em] hover:bg-[#AEA181] transition-all">
+                                Initialize Order
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -144,8 +173,6 @@
 
         {{-- RIGHT COLUMN: SPECIALIST & MAIL --}}
         <div class="space-y-8">
-            
-            {{-- Specialist Card --}}
             <div class="bg-[#5A4651] p-10 text-white flex flex-col justify-between relative overflow-hidden">
                 <div class="absolute top-[-20px] right-[-20px] opacity-5 text-7xl italic brand-font text-white">LB</div>
                 <div>
@@ -161,12 +188,11 @@
                         </div>
                     @else
                         <h4 class="brand-font text-2xl italic mb-2">Pending Liaison</h4>
-                        <p class="text-[10px] opacity-50 leading-relaxed">We are currently assigning a specialist to manage your account requirements.</p>
+                        <p class="text-[10px] opacity-50 leading-relaxed">We are currently assigning a specialist to manage your account.</p>
                     @endif
                 </div>
             </div>
 
-            {{-- Mail Terminal Preview --}}
             <div class="bg-white border border-slate-100 p-8">
                 <div class="flex justify-between items-center mb-6">
                     <h4 class="text-[9px] font-black uppercase tracking-[0.3em] text-[#5A4651]">Mail Terminal</h4>
@@ -182,7 +208,7 @@
                     @endphp
 
                     @if($lastMsg)
-                        <div class="p-4 bg-[#FDFCFB] border border-slate-50 transition-hover hover:border-[#AEA181]/30 cursor-pointer">
+                        <div class="p-4 bg-[#FDFCFB] border border-slate-50">
                             <p class="text-[10px] font-bold text-[#5A4651] mb-1">
                                 {{ $lastMsg->sender->name ?? 'System' }}
                             </p>
@@ -201,7 +227,6 @@
                     Access Full Terminal
                 </a>
             </div>
-
         </div>
     </div>
 </div>

@@ -8,6 +8,7 @@
         <a href="{{ route('dashboard') }}" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 hover:text-[#5A4651] transition-all pb-6">
             Project Overview
         </a>
+        {{-- This route is now defined in web.php, so it won't crash anymore --}}
         <a href="{{ route('orders.index') }}" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 hover:text-[#5A4651] transition-all pb-6">
             My Orders
         </a>
@@ -23,7 +24,7 @@
     </div>
 
     @if (session('status') === 'profile-updated')
-        <div class="bg-green-50 border border-green-100 p-4 text-center text-[10px] font-black uppercase tracking-widest text-green-600">
+        <div class="bg-green-50 border border-green-100 p-4 text-center text-[10px] font-black uppercase tracking-widest text-green-600 mb-6">
             Security credentials and identity image updated successfully.
         </div>
     @endif
@@ -42,21 +43,6 @@
                 <div class="space-y-3">
                     <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block">Profile Identification Image</label>
                     <input type="file" name="avatar" class="text-[10px] text-slate-400 file:mr-4 file:py-2 file:px-4 file:border file:border-slate-100 file:text-[9px] file:font-black file:uppercase file:bg-white file:text-[#5A4651] hover:file:bg-[#5A4651] hover:file:text-white transition-all">
-                    <p class="text-[9px] italic text-slate-400">Accepted formats: JPG, PNG. Max size: 2MB.</p>
-                </div>
-            </div>
-
-            {{-- LOCKED IDENTITY SECTION --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="space-y-2 opacity-60">
-                    <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block">Full Name (Verified)</label>
-                    <input type="text" value="{{ $user->name }}" disabled class="w-full border-0 border-b border-slate-100 text-sm italic text-[#5A4651] bg-transparent pb-2 cursor-not-allowed">
-                    <p class="text-[8px] text-[#AEA181] italic">Identity records are managed by your executive liaison.</p>
-                </div>
-
-                <div class="space-y-2 opacity-60">
-                    <label class="text-[8px] uppercase font-black text-slate-300 tracking-[0.2em] block">Registered Email (Locked)</label>
-                    <input type="email" value="{{ $user->email }}" disabled class="w-full border-0 border-b border-slate-100 text-sm italic text-[#5A4651] bg-transparent pb-2 cursor-not-allowed">
                 </div>
             </div>
 

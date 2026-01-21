@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 class PublicController extends Controller
 {
+    /**
+     * Display Capability/Service Details
+     */
     public function showService($slug)
     {
         $services = [
@@ -83,13 +86,69 @@ class PublicController extends Controller
             ],
         ];
 
-        // If the slug doesn't exist, show the 404 page
         if (!isset($services[$slug])) {
             abort(404);
         }
 
         $service = $services[$slug];
-
         return view('public.service-detail', compact('service'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Governance & Legal Methods
+    |--------------------------------------------------------------------------
+    */
+
+    public function terms() 
+    {
+        return view('public.info', [
+            'title' => 'Terms of Protocol',
+            'content' => '
+                <p class="mb-6">These Terms of Protocol outline the rules for using LeadBridge responsibly and securely.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Responsibility</h3>
+                <p>By accessing the system, users agree to use LeadBridge only for legitimate lead management purposes. Users are expected to provide accurate information, protect their login credentials, and respect system security at all times.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Restrictions</h3>
+                <p>Unauthorized access, misuse of data, or attempts to disrupt system operations are strictly prohibited. Any activity that violates these protocols may result in restricted access or account suspension to protect the integrity of the platform.</p>'
+        ]);
+    }
+
+    public function privacy() 
+    {
+        return view('public.info', [
+            'title' => 'Privacy Shield',
+            'content' => '
+                <p class="mb-6">Your privacy matters to us. The LeadBridge Privacy Shield is designed to protect personal and business information stored within the system.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Data Handling</h3>
+                <p>We collect only the data necessary to manage leads effectively and use it solely for its intended purpose. All information is handled with confidentiality and protected through appropriate security measures.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Transparency</h3>
+                <p>Users have the right to access, update, or correct their personal data. LeadBridge does not share personal information with third parties unless required for system functionality or legal compliance.</p>'
+        ]);
+    }
+
+    public function cookies() 
+    {
+        return view('public.info', [
+            'title' => 'Cookie Architecture',
+            'content' => '
+                <p class="mb-6">LeadBridge uses cookies to ensure the platform runs smoothly and securely.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Functionality</h3>
+                <p>Essential cookies help manage user sessions, enable secure logins, and maintain system functionality. Functional cookies remember user preferences to improve overall experience. In some cases, analytical cookies may be used to understand system usage.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">User Control</h3>
+                <p>Cookies do not store sensitive information such as passwords. Users can manage or disable cookies through their browser settings, though some features may not work properly without essential cookies.</p>'
+        ]);
+    }
+
+    public function compliance() 
+    {
+        return view('public.info', [
+            'title' => 'Compliance Audit',
+            'content' => '
+                <p class="mb-6">LeadBridge follows regular compliance checks to maintain security, reliability, and regulatory alignment.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Audit Scope</h3>
+                <p>These audits review how data is handled, stored, and accessed within the system. Security controls, user permissions, and privacy practices are evaluated to ensure they meet organizational and legal standards.</p>
+                <h3 class="text-[#5A4651] font-bold mt-8 mb-4 uppercase tracking-wider text-sm">Evolution</h3>
+                <p>Audit findings are used to improve system performance, strengthen security measures, and ensure continuous compliance as LeadBridge evolves.</p>'
+        ]);
     }
 }

@@ -28,28 +28,30 @@
                 @csrf
 
                 {{-- Email Field --}}
-                <div class="space-y-3">
-                    <label for="email" class="text-[9px] uppercase font-black text-[#5A4651] tracking-[0.3em] opacity-60">System Email</label>
+                <div class="space-y-3 group">
+                    <label for="email" class="text-[9px] uppercase font-black text-[#5A4651] tracking-[0.3em] opacity-60 group-focus-within:opacity-100 transition-opacity">System Email</label>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                           class="w-full border-0 border-b border-slate-100 focus:ring-0 focus:border-[#AEA181] py-4 text-sm italic placeholder-slate-200 bg-transparent transition-colors">
+                           placeholder="enter your terminal email"
+                           class="w-full border-0 border-b-2 border-slate-100 focus:ring-0 focus:border-[#AEA181] focus:bg-slate-50/50 py-4 px-2 text-sm text-slate-800 italic placeholder-slate-400 transition-all outline-none">
                 </div>
 
                 {{-- Password Field --}}
-                <div class="space-y-3">
+                <div class="space-y-3 group">
                     <div class="flex justify-between items-center">
-                        <label for="password" class="text-[9px] uppercase font-black text-[#5A4651] tracking-[0.3em] opacity-60">Security Key</label>
+                        <label for="password" class="text-[9px] uppercase font-black text-[#5A4651] tracking-[0.3em] opacity-60 group-focus-within:opacity-100 transition-opacity">Security Key</label>
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="text-[8px] uppercase tracking-[0.2em] text-[#AEA181] hover:text-[#5A384B] transition-colors">Forgotten?</a>
                         @endif
                     </div>
                     <input id="password" type="password" name="password" required
-                           class="w-full border-0 border-b border-slate-100 focus:ring-0 focus:border-[#AEA181] py-4 text-sm italic placeholder-slate-200 bg-transparent transition-colors">
+                           placeholder="••••••••"
+                           class="w-full border-0 border-b-2 border-slate-100 focus:ring-0 focus:border-[#AEA181] focus:bg-slate-50/50 py-4 px-2 text-sm text-slate-800 transition-all outline-none">
                 </div>
 
                 {{-- Remember & Sign In --}}
                 <div class="pt-4 flex flex-col gap-6">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" name="remember" id="remember" class="rounded-none border-slate-200 text-[#5A384B] focus:ring-[#AEA181]">
+                        <input type="checkbox" name="remember" id="remember" class="rounded-none border-slate-300 text-[#5A384B] focus:ring-[#AEA181]">
                         <label for="remember" class="text-[9px] uppercase tracking-[0.3em] text-slate-400">Maintain Session</label>
                     </div>
 
@@ -76,18 +78,18 @@
                 <div class="grid grid-cols-1 gap-2 text-[10px] font-light italic text-slate-400">
                     <div class="flex justify-between border-b border-slate-100 pb-1">
                         <span>Architect (Admin):</span>
-                        <span class="text-[#5A4651]">admin@leadbridge.com</span>
+                        <span class="text-[#5A4651] font-medium">admin@leadbridge.com</span>
                     </div>
                     <div class="flex justify-between border-b border-slate-100 pb-1">
                         <span>Management:</span>
-                        <span class="text-[#5A4651]">manager@leadbridge.com</span>
+                        <span class="text-[#5A4651] font-medium">manager@leadbridge.com</span>
                     </div>
                     <div class="flex justify-between">
                         <span>Representative:</span>
-                        <span class="text-[#5A4651]">john@leadbridge.com</span>
+                        <span class="text-[#5A4651] font-medium">john@leadbridge.com</span>
                     </div>
                 </div>
-                <p class="text-center text-[8px] text-slate-300 uppercase tracking-[0.2em] mt-4">Key: password</p>
+                <p class="text-center text-[8px] text-slate-300 uppercase tracking-[0.2em] mt-4 font-bold">Key: password</p>
             </div>
         </div>
         

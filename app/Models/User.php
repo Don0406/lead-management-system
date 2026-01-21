@@ -112,4 +112,10 @@ class User extends Authenticatable
     {
         return $this->receivedMessages()->where('is_read', false)->count();
     }
+
+    public function orders()
+{
+    return $this->hasMany(Order::class);
+}
+
 }

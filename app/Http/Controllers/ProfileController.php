@@ -20,6 +20,8 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
+        // Validate the inputs
+        // Note: 'new_password' must match the name="" attribute in your HTML
         $request->validate([
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
             'new_password' => ['nullable', 'confirmed', Password::defaults()],
@@ -27,7 +29,6 @@ class ProfileController extends Controller
 
         // 1. Handle Avatar Upload
         if ($request->hasFile('avatar')) {
-            // Delete old avatar if it exists to save space
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }

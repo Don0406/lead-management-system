@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Lead;
 use App\Models\User;
 use App\Models\Message;
+use App\Models\Order; // Added this to access Order data
 
 class HomeController extends Controller
 {
@@ -36,15 +37,18 @@ class HomeController extends Controller
         if ($user->role === 'guest' || $user->role === 'client') {
             $lead = Lead::where('email', $user->email)->first();
             
+            // Fetch client's specific orders
+            $orders = Order::where('user_id', $user->id)->latest()->get();
+            
             return view('portal.dashboard', [
                 'lead' => $lead,
                 'representative' => $lead ? $lead->assignedUser : null,
-                'unreadCount' => $unreadCount
+                'unreadCount' => $unreadCount,
+                'orders' => $orders
             ]);
         }
 
         // 3. INTERNAL DASHBOARD: STAFF (Admin, Sales Manager, Sales Rep)
-        // We use the helper method from the User model to fetch the right data
         $query = $user->getAccessibleLeads();
 
         $stats = [
@@ -58,7 +62,11 @@ class HomeController extends Controller
         // Fetch 5 most recent leads for the activity feed
         $recentLeads = (clone $query)->latest()->take(5)->get();
 
-        return view('dashboard', compact('stats', 'recentLeads', 'unreadCount'));
+        // NEW: Fetch 5 most recent orders (Acquisitions) for Staff to manage
+        // We use 'with' to get User and Product info in one go to prevent crashes
+        $recentOrders = Order::with(['user', 'product'])->latest()->take(5)->get();
+
+        return view('dashboard', compact('stats', 'recentLeads', 'recentOrders', 'unreadCount'));
     }
 
     /**

@@ -186,18 +186,78 @@
 </main>
 
 <footer class="bg-[#261E23] pt-24 pb-12 px-12 border-t border-white/5 relative z-10 overflow-hidden">
-    <div class="max-w-[1600px] mx-auto text-center md:text-left">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
+    {{-- Background Decorative Element --}}
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#AEA181]/5 rounded-full blur-[120px] -mr-48 -mt-48"></div>
+
+    <div class="max-w-[1600px] mx-auto relative z-10">
+        {{-- Main Grid Adjusted to 3 Columns --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-24 text-center md:text-left">
+            
+            {{-- Column 1: Brand & Social --}}
+            <div class="space-y-8">
+                <div>
+                    <div class="brand-font text-3xl text-white italic tracking-tighter">LeadBridge</div>
+                    <p class="text-[10px] tracking-[0.2em] text-white/30 uppercase leading-relaxed mt-4">
+                        Architecture of Growth. <br>Precision engineering for the modern enterprise.
+                    </p>
+                </div>
+                
+                {{-- Social Matrix --}}
+                <div class="flex justify-center md:justify-start gap-6">
+                    <a href="https://twitter.com" target="_blank" class="text-white/20 hover:text-[#AEA181] transition-all duration-300">
+                        <i class="fab fa-x-twitter text-lg"></i>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" class="text-white/20 hover:text-[#AEA181] transition-all duration-300">
+                        <i class="fab fa-facebook-f text-lg"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" class="text-white/20 hover:text-[#AEA181] transition-all duration-300">
+                        <i class="fab fa-instagram text-lg"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" class="text-white/20 hover:text-[#AEA181] transition-all duration-300">
+                        <i class="fab fa-linkedin-in text-lg"></i>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Column 2: Governance --}}
             <div class="space-y-6">
-                <div class="brand-font text-3xl text-white italic tracking-tighter">LeadBridge</div>
-                <p class="text-[10px] tracking-[0.2em] text-white/30 uppercase leading-relaxed">
-                    Precision lead management for the modern enterprise.
-                </p>
+                <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#AEA181]">Governance</h5>
+                <ul class="space-y-4 text-[11px] font-medium uppercase tracking-widest text-white/40">
+                    <li><a href="{{ route('legal.terms') }}" class="hover:text-white transition-colors">Terms of Protocol</a></li>
+                    <li><a href="{{ route('legal.privacy') }}" class="hover:text-white transition-colors">Privacy Shield</a></li>
+                    <li><a href="{{ route('legal.cookies') }}" class="hover:text-white transition-colors">Cookie Architecture</a></li>
+                    <li><a href="{{ route('legal.compliance') }}" class="hover:text-white transition-colors">Compliance Audit</a></li>
+                </ul>
             </div>
+
+            {{-- Column 3: Status --}}
+            <div class="space-y-6">
+                <h5 class="text-[10px] font-black uppercase tracking-[0.4em] text-[#AEA181]">Global Status</h5>
+                <div class="bg-white/5 border border-white/10 p-6 rounded-sm">
+                    <div class="flex items-center justify-center md:justify-start gap-3 mb-2">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-white/80">Systems Nominal</span>
+                    </div>
+                    <p class="text-[9px] text-white/30 leading-relaxed uppercase tracking-tighter">
+                        All lead synchronization protocols are currently active and encrypted.
+                    </p>
+                </div>
             </div>
-        <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        </div>
+
+        {{-- Bottom Bar --}}
+        <div class="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
             <div class="text-[9px] tracking-[0.4em] text-white/10 uppercase">
                 &copy; {{ date('Y') }} LeadBridge LMS — Engineering Momentum
+            </div>
+            
+            <div class="flex items-center gap-8">
+                <span class="text-[8px] font-mono text-white/10 uppercase tracking-widest italic">
+                    Identity: {{ auth()->check() ? auth()->user()->role : 'Anonymous' }}
+                </span>
+                <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-[#AEA181] transition-colors">
+                    Back to Zenith <i class="fas fa-arrow-up ml-2"></i>
+                </button>
             </div>
         </div>
     </div>

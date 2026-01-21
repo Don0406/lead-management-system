@@ -9,7 +9,9 @@ class Order extends Model
 {
     use HasFactory;
 
-    // These fields are "fillable" (can be saved to the database)
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'user_id',
         'product_id',
@@ -18,7 +20,25 @@ class Order extends Model
     ];
 
     /**
-     * Relationship: An order belongs to a specific User.
+     * The attributes that should be cast.
+     * This ensures 'total' is always treated as a number, not a string.
+     */
+    protected $casts = [
+        'total' => 'decimal:2',
+        'created_at' => 'datetime',
+    ];
+
+    /**
+     * HELPER: Get a formatted Order Number (e.g., #ORD-00042)
+     * You can use this in your blade views as {{ $order->formatted_id }}
+     */
+    public function getFormattedIdAttribute()
+    {
+        return '#ORD-' . str_pad($this->id, 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Relationship: An order belongs to a specific User (Client).
      */
     public function user()
     {
@@ -26,7 +46,7 @@ class Order extends Model
     }
 
     /**
-     * Relationship: An order is for a specific Product.
+     * Relationship: An order is for a specific Product (Asset).
      */
     public function product()
     {
