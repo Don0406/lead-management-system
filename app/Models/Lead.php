@@ -31,44 +31,54 @@ class Lead extends Model
         'estimated_value' => 'decimal:2'
     ];
 
-    // Relationship with assigned user
+    /**
+     * Relationship with the User assigned to manage this lead
+     */
     public function assignedUser()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    // Relationship with creator
+    /**
+     * Relationship with the User who created this lead record
+     */
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Accessor for full name
+    /**
+     * Accessor for full name: $lead->full_name
+     */
     public function getFullNameAttribute()
     {
-        return $this->first_name . ' ' . $this->last_name;
+        return "{$this->first_name} {$this->last_name}";
     }
 
-    // Scope for filtering by status
+    /**
+     * Scope for filtering by status
+     */
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);
     }
 
-    // Scope for user's leads (for sales reps)
+    /**
+     * Scope for user's leads (Sales context)
+     */
     public function scopeMyLeads($query, $userId)
     {
-        return $query->where('assigned_to', $userId)
-                    ->orWhere('created_by', $userId);
+        return $query->where(function($q) use ($userId) {
+            $q->where('assigned_to', $userId)
+              ->orWhere('created_by', $userId);
+        });
     }
 
-    /**
-    * Get user assigned to this lead
-    */
-    public function assignedTo()
+
+     /* Links the Lead to a registered User account by email
+     */
+    public function user()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(User::class, 'email', 'email');
     }
-
-    
 }
